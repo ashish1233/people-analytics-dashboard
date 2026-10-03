@@ -1,0 +1,43 @@
+# From templates/web/backend, with one change: the health-contract hook runs at
+# the tier this tenant is actually assigned, so the restricted-tier startup
+# check ("every route declares a scope") is exercised before merge rather than
+# discovered at deploy.
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: ["--maxkb=512"]
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: health-contract
+        name: health contract (ADR-3)
+        entry: env INSIGHTS_TIER=restricted python scripts/check_health_contract.py dashboard.main:app
+        language: system
+        pass_filenames: false
+        files: ^(src/|pyproject\.toml$)
+
+      - id: tests
+        name: pytest
+        entry: pytest -q
+        language: system
+        pass_filenames: false
+        files: ^(src/|tests/)
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.7
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format

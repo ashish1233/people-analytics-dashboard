@@ -1,0 +1,27 @@
+/*
+ * The only global styles an app needs. Everything else comes from the ui-kit,
+ * which owns the visual language — resist adding to this file.
+ */
+
+html {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ins-font-family-sans);
+  color: var(--ins-color-text);
+  background-color: var(--ins-color-surface-muted);
+}
+
+/* Page-level spacing for an Alert sitting above the main content. */
+.page-alert {
+  margin-bottom: var(--ins-space-lg);
+}
