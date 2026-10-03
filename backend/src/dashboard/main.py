@@ -103,9 +103,10 @@ async def read_insights(
 
     - `@scoped(READ_SENSITIVE)` is a declaration checked once at startup. On
       this tier the app will not boot if a route is missing one (ADR-2).
-    - `require_scope(...)` is the check that runs per request. The SDK does not
-      derive one from the other, so a route that declares and does not check
-      serves compensation data to every authenticated caller.
+    - `require_scope(...)` repeats it in the body. The middleware already
+      enforces the declared scope, so this is belt-and-braces: it keeps the
+      requirement visible in the file someone opens during an incident, without
+      them first having to go and read the SDK.
 
     The check runs before the fetch. The data client records the audit event
     *before* performing the read — that ordering is what makes fail-closed audit
